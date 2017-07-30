@@ -4,6 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using Amazon.Lambda.Core;
+using Amazon.S3;
+using Amazon.S3.Model;
+
 
 // Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.Json.JsonSerializer))]
@@ -12,7 +15,6 @@ namespace AWSLambdaSample
 {
     public class Function
     {
-        
         /// <summary>
         /// A simple function that takes a string and does a ToUpper
         /// </summary>
@@ -21,8 +23,19 @@ namespace AWSLambdaSample
         /// <returns></returns>
         public string FunctionHandler(string input, ILambdaContext context)
         {
-            return input?.ToUpper();
-
+            AmazonS3Client client = new AmazonS3Client();
+            PutObjectRequest request = new PutObjectRequest();
+            
+            request.BucketName = "databucket-rest-datasource";
+            request.Key = "hello.txt";
+            request.ContentType = "text/plain";
+            request.ContentBody = "Hello World!";
+            try {
+                client.PutObjectAsync(request);
+                return "OK";
+            } catch (Exception e) {
+                return e.ToString();
+            }
         }
     }
 }
