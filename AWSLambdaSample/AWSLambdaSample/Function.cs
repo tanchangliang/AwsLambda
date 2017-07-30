@@ -23,6 +23,7 @@ namespace AWSLambdaSample
         /// <returns></returns>
         public string FunctionHandler(string input, ILambdaContext context)
         {
+            //IAmazonS3 client = new AmazonS3Client(Amazon.RegionEndpoint.APNortheast1);
             AmazonS3Client client = new AmazonS3Client();
             PutObjectRequest request = new PutObjectRequest();
             
@@ -32,7 +33,9 @@ namespace AWSLambdaSample
             request.ContentBody = "Hello World!";
             try {
                 client.PutObjectAsync(request);
-                return "OK";
+                
+                return client.PutObjectAsync(request).ToString();
+
             } catch (Exception e) {
                 return e.ToString();
             }
